@@ -5,6 +5,45 @@ import { z } from "zod";
 import * as fs from "fs";
 import * as path from "path";
 import sharp from "sharp";
+import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
+
+// 허용된 디렉토리 가져오기
+const allowedDirectories = process.argv.slice(2);
+if (allowedDirectories.length === 0) {
+  console.error("오류: 허용된 디렉토리가 지정되지 않았습니다.");
+  console.error("사용법: node dist/index.js /허용/경로1 /허용/경로2 ...");
+  process.exit(1);
+}
+
+// 모든 허용된 디렉토리를 절대 경로로 변환
+const resolvedAllowedDirectories = allowedDirectories.map((dir) =>
+  path.resolve(dir)
+);
+console.error("허용된 디렉토리:", resolvedAllowedDirectories);
+
+/**
+ * 경로가 허용된 디렉토리 내에 있는지 확인
+ */
+function isPathAllowed(filePath: string): boolean {
+  const resolvedPath = path.resolve(filePath);
+  return resolvedAllowedDirectories.some(
+    (allowedDir) =>
+      resolvedPath === allowedDir ||
+      resolvedPath.startsWith(allowedDir + path.sep)
+  );
+}
+
+/**
+ * 경로 유효성 검사
+ */
+function validatePath(filePath: string): void {
+  if (!isPathAllowed(filePath)) {
+    throw new McpError(
+      ErrorCode.InvalidRequest,
+      `접근 거부: ${filePath}는 허용된 디렉토리 내에 없습니다`
+    );
+  }
+}
 
 // 서버 초기화
 const server = new McpServer({
@@ -22,6 +61,9 @@ async function convertToWebP(
   keepOriginal: boolean = false
 ): Promise<any> {
   try {
+    // 경로 유효성 검사
+    validatePath(imagePath);
+
     // 입력 파일이 존재하는지 확인
     if (!fs.existsSync(imagePath)) {
       throw new Error(`입력 파일이 존재하지 않습니다: ${imagePath}`);
@@ -36,6 +78,9 @@ async function convertToWebP(
     // 출력 파일명 생성
     const filename = path.basename(imagePath, ext);
     const outputPath = path.join(path.dirname(imagePath), `${filename}.webp`);
+
+    // 출력 경로 유효성 검사
+    validatePath(outputPath);
 
     // 변환 옵션 설정
     const options = { quality, lossless };
@@ -113,6 +158,18 @@ server.tool(
     };
   }
 );
+
+// // 허용된 디렉토리 목록 보기 도구
+// server.tool("list_allowed_directories", {}, async () => {
+//   return {
+//     content: [
+//       {
+//         type: "text",
+//         text: JSON.stringify(resolvedAllowedDirectories, null, 2),
+//       },
+//     ],
+//   };
+// });
 
 // 서버 시작
 const transport = new StdioServerTransport();
