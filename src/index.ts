@@ -62,6 +62,7 @@ async function convertToWebP(
 ): Promise<any> {
   try {
     // 경로 유효성 검사
+
     validatePath(imagePath);
 
     // 입력 파일이 존재하는지 확인
