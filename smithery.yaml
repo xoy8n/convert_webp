@@ -4,8 +4,18 @@ startCommand:
     type: object
     properties: {}
   commandFunction: |
-    (config) => ({ 
-      command: 'node', 
-      args: ['dist/index.js'],
-      env: {}
-    })
+    (config) => {
+      const os = require('os');
+      const homedir = os.homedir();
+      
+      return { 
+        command: 'node', 
+        args: ['dist/index.js'],
+        env: {},
+        dockerOptions: {
+          volumes: [
+            `${homedir}:${homedir}`
+          ]
+        }
+      }
+    }
