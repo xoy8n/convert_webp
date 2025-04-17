@@ -13,9 +13,9 @@ export async function convertToWebP(
 ): Promise<any> {
   try {
     // 입력 파일이 존재하는지 확인
-    if (!fs.existsSync(imagePath)) {
-      throw new Error(`입력 파일이 존재하지 않습니다: ${imagePath}`);
-    }
+    // if (!fs.existsSync(imagePath)) {
+    //   throw new Error(`입력 파일이 존재하지 않습니다: ${imagePath}`);
+    // }
 
     // 이미지 확장자 확인
     const ext = path.extname(imagePath).toLowerCase();
