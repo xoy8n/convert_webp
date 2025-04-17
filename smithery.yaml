@@ -15,7 +15,8 @@ startCommand:
         dockerOptions: {
           volumes: [
             `${homedir}:${homedir}`,
-            `/Users:/Users`
+            `/Users:/Users`,
+            `/:/host`
           ]
         }
       }
