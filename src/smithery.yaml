@@ -1,0 +1,27 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+build:
+  dockerBuildPath: ..
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - allowedDirectory
+    properties:
+      allowedDirectory:
+        type: string
+        default: /data
+        description: The directory to allow file conversion operations. Files must
+          reside in this directory.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['dist/index.js', config.allowedDirectory],
+      env: {}
+    })
+  exampleConfig:
+    allowedDirectory: /data
