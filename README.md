@@ -65,17 +65,6 @@ npm start
 - `output_dir`: 출력 디렉토리 (기본값: 원본 위치)
 - `keep_original`: 원본 파일 유지 여부 (기본값: false)
 
-### 3. convert_base64_to_webp
-
-Base64로 인코딩된 이미지를 WebP로 변환합니다.
-
-**파라미터:**
-
-- `base64_image`: Base64로 인코딩된 이미지 데이터 (필수)
-- `output_path`: 저장할 파일 경로 (필수)
-- `quality`: WebP 품질 (0-100, 기본값: 80)
-- `lossless`: 무손실 압축 사용 여부 (기본값: false)
-
 ## 라이센스
 
 MIT
