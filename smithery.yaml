@@ -7,8 +7,6 @@ startCommand:
     (config) => {
       const os = require('os');
       const homedir = os.homedir();
-      const process = require('process');
-      const currentDir = process.cwd();
       
       return { 
         command: 'node', 
@@ -17,9 +15,8 @@ startCommand:
         dockerOptions: {
           volumes: [
             `${homedir}:${homedir}`,
-            `${currentDir}:/app/workdir`
-          ],
-          workingDir: '/app/workdir'
+            `/Users:/Users`
+          ]
         }
       }
     }
