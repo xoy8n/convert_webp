@@ -16,5 +16,5 @@ RUN npm run build
 # 작업 디렉토리 생성
 RUN mkdir -p /app/workdir
 
-# 서버 실행
+# 서버 실행!
 CMD ["node", "dist/index.js"] 
