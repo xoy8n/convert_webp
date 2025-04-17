@@ -1,0 +1,28 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - allowedDirectories
+    properties:
+      allowedDirectories:
+        type: array
+        items:
+          type: string
+        default:
+          - /data
+        description: Absolute paths which are allowed for image conversion.
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['dist/index.js', ...config.allowedDirectories],
+      env: {}
+    })
+  exampleConfig:
+    allowedDirectories:
+      - /data
