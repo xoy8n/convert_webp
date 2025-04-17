@@ -19,10 +19,8 @@ server.tool(
     keep_original: z.boolean().default(false),
   },
   async (params) => {
-    const imagePath = params.image_path.replace(/^"|"$/g, "");
-
     const result = await convertToWebP(
-      imagePath,
+      params.image_path,
       params.quality,
       params.lossless,
       params.keep_original
@@ -43,9 +41,7 @@ server.tool(
   },
   async (params) => {
     const results = [];
-    for (const path of params.image_paths) {
-      const imagePath = path.replace(/^"|"$/g, "");
-
+    for (const imagePath of params.image_paths) {
       const result = await convertToWebP(
         imagePath,
         params.quality,
