@@ -2,16 +2,8 @@
 
 startCommand:
   type: stdio
-  configSchema:
-    type: object
-    properties:
-      allowedDirectory:
-        type: string
-        description: "이미지 변환이 허용된 디렉토리 경로"
-    required: ["allowedDirectory"]
-  commandFunction: |-
-    (config) => ({ 
-      command: 'node', 
-      args: ['dist/index.js'],
-      env: { ALLOWED_DIR: config.allowedDirectory }
-    })
+  configSchema: {}
+  commandFunction:
+    # A function that produces the CLI command to start the MCP on stdio.
+    |-
+    (config) => ({ command: 'node', args: ['dist/index.js'] })
