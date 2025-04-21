@@ -1,85 +1,48 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
-import { convertToWebP } from "./convert.js";
-import { stat } from "fs/promises";
-import { existsSync } from "fs";
 
+import { ConvertToWebpTool } from "./convert.js";
+
+// 명령줄 인수 파싱
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const params: Record<string, string> = {};
+
+  for (const arg of args) {
+    if (arg.startsWith("--") || arg.startsWith("—")) {
+      const [key, value] = arg.replace(/^(-{1,2}|—)/, "").split("=");
+      if (key && value) {
+        params[key] = value.replace(/^["'](.*)["']$/, "$1");
+      }
+    }
+  }
+
+  return params;
+}
+
+const params = parseArgs();
+const API_KEY = params.API_KEY || process.env.API_KEY;
+
+console.log("PARAMS", params);
+console.log("API_KEY", API_KEY);
+
+console.log("Starting WebP Conversion MCP server...");
 const server = new McpServer({
-  name: "WebP Converter",
+  name: "webp-convert-mcp",
   version: "1.0.0",
 });
 
-server.tool(
-  "convert_to_webp",
-  {
-    image_path: z.string(),
-    quality: z.number().default(80),
-    lossless: z.boolean().default(false),
-    keep_original: z.boolean().default(false),
-  },
-  async (params) => {
-    const result = await convertToWebP(
-      params.image_path,
-      params.quality,
-      params.lossless,
-      params.keep_original
-    );
-    return {
-      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-    };
-  }
-);
+// 도구 등록
+new ConvertToWebpTool(API_KEY, params).register(server);
 
-server.tool(
-  "batch_convert_to_webp",
-  {
-    image_paths: z.array(z.string()),
-    quality: z.number().default(80),
-    lossless: z.boolean().default(false),
-    keep_original: z.boolean().default(false),
-  },
-  async (params) => {
-    const results = [];
+async function runServer() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("WebP Conversion MCP Server running on stdio");
+}
 
-    for (const imagePath of params.image_paths) {
-      if (existsSync(imagePath)) {
-        const fileStat = await stat(imagePath);
-
-        if (!fileStat.isFile()) {
-          results.push({
-            success: false,
-            error: "디렉토리는 지원되지 않습니다. 개별 파일만 입력해주세요.",
-            input_path: imagePath,
-          });
-          continue;
-        }
-
-        const result = await convertToWebP(
-          imagePath,
-          params.quality,
-          params.lossless,
-          params.keep_original
-        );
-        results.push(result);
-      } else {
-        results.push({
-          success: false,
-          error: `파일이 존재하지 않습니다: ${imagePath}`,
-          input_path: imagePath,
-        });
-      }
-    }
-
-    return {
-      content: [{ type: "text", text: JSON.stringify(results, null, 2) }],
-    };
-  }
-);
-
-const transport = new StdioServerTransport();
-server.connect(transport).catch((error) => {
-  console.error("서버 연결 오류:", error);
+runServer().catch((error) => {
+  console.error("Fatal error running server:", error);
   process.exit(1);
 });
