@@ -1,5 +1,7 @@
 # WebP 변환 MCP 서버
 
+[![smithery badge](https://smithery.ai/badge/@xoy8n/convert_webp)](https://smithery.ai/server/@xoy8n/convert_webp)
+
 이 프로젝트는 이미지 파일을 WebP 형식으로 변환하는 Model Context Protocol(MCP) 서버입니다.
 
 ## 기능
@@ -10,7 +12,17 @@
 - 무손실/손실 압축 지원
 - 품질 조정 지원
 
-## Smithery 배포 방법
+## 설치 및 배포 방법
+
+### Smithery 사용 설치
+
+Claude Desktop에서 WebP 변환 MCP 서버를 자동으로 설치하기 위해 [Smithery](https://smithery.ai/server/@xoy8n/convert_webp)를 사용하세요:
+
+```bash
+npx -y @smithery/cli install @xoy8n/convert_webp --client claude
+```
+
+### Smithery 배포 방법
 
 1. Smithery에서 서버 추가 또는 기존 서버 선택
 2. 배포 탭 접근 (인증된 소유자만 가능)
