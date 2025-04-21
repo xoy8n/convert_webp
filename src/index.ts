@@ -2,18 +2,15 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { convertToWebP, getImageFilesInDirectory } from "./convert.js";
-import { readdir, stat } from "fs/promises";
-import { resolve, join, extname } from "path";
+import { convertToWebP } from "./convert.js";
+import { stat } from "fs/promises";
 import { existsSync } from "fs";
 
-// 서버 초기화
 const server = new McpServer({
   name: "WebP Converter",
   version: "1.0.0",
 });
 
-// 도구 정의
 server.tool(
   "convert_to_webp",
   {
@@ -23,35 +20,15 @@ server.tool(
     keep_original: z.boolean().default(false),
   },
   async (params) => {
-    try {
-      // 단일 파일 변환
-      const result = await convertToWebP(
-        params.image_path,
-        params.quality,
-        params.lossless,
-        params.keep_original
-      );
-      return {
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
-    } catch (error: any) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(
-              {
-                success: false,
-                error: error.message,
-                input_path: params.image_path,
-              },
-              null,
-              2
-            ),
-          },
-        ],
-      };
-    }
+    const result = await convertToWebP(
+      params.image_path,
+      params.quality,
+      params.lossless,
+      params.keep_original
+    );
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
   }
 );
 
@@ -64,72 +41,43 @@ server.tool(
     keep_original: z.boolean().default(false),
   },
   async (params) => {
-    try {
-      const results = [];
+    const results = [];
 
-      for (const imagePath of params.image_paths) {
-        const absolutePath = resolve(imagePath);
+    for (const imagePath of params.image_paths) {
+      if (existsSync(imagePath)) {
+        const fileStat = await stat(imagePath);
 
-        // 파일 상태 확인
-        if (existsSync(absolutePath)) {
-          const fileStat = await stat(absolutePath);
-
-          if (fileStat.isDirectory()) {
-            // 디렉토리인 경우 모든 이미지 변환
-            const imageFiles = await getImageFilesInDirectory(absolutePath);
-
-            for (const imageFile of imageFiles) {
-              const result = await convertToWebP(
-                imageFile,
-                params.quality,
-                params.lossless,
-                params.keep_original
-              );
-              results.push(result);
-            }
-          } else {
-            // 단일 파일 변환
-            const result = await convertToWebP(
-              absolutePath,
-              params.quality,
-              params.lossless,
-              params.keep_original
-            );
-            results.push(result);
-          }
-        } else {
+        if (!fileStat.isFile()) {
           results.push({
             success: false,
-            error: `파일이 존재하지 않습니다: ${absolutePath}`,
-            input_path: absolutePath,
+            error: "디렉토리는 지원되지 않습니다. 개별 파일만 입력해주세요.",
+            input_path: imagePath,
           });
+          continue;
         }
-      }
 
-      return {
-        content: [{ type: "text", text: JSON.stringify(results, null, 2) }],
-      };
-    } catch (error: any) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(
-              {
-                success: false,
-                error: error.message,
-              },
-              null,
-              2
-            ),
-          },
-        ],
-      };
+        const result = await convertToWebP(
+          imagePath,
+          params.quality,
+          params.lossless,
+          params.keep_original
+        );
+        results.push(result);
+      } else {
+        results.push({
+          success: false,
+          error: `파일이 존재하지 않습니다: ${imagePath}`,
+          input_path: imagePath,
+        });
+      }
     }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify(results, null, 2) }],
+    };
   }
 );
 
-// 서버 시작
 const transport = new StdioServerTransport();
 server.connect(transport).catch((error) => {
   console.error("서버 연결 오류:", error);

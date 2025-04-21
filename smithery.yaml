@@ -1,7 +1,7 @@
 # Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
 
 startCommand:
-  type: stdio
+  type: cursor
   configSchema: {}
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
