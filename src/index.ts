@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
-import { ConvertToWebpTool } from "./convert.js";
+import { ReadFileTool } from "./read-file.js";
 
-// 명령줄 인수 파싱
+// Parse command line arguments
 function parseArgs() {
   const args = process.argv.slice(2);
   const params: Record<string, string> = {};
@@ -24,22 +25,18 @@ function parseArgs() {
 const params = parseArgs();
 const API_KEY = params.API_KEY || process.env.API_KEY;
 
-console.log("PARAMS", params);
-console.log("API_KEY", API_KEY);
-
-console.log("Starting WebP Conversion MCP server...");
 const server = new McpServer({
-  name: "webp-convert-mcp",
-  version: "1.0.0",
+  name: "fs-mcp",
+  version: "0.0.2",
 });
 
-// 도구 등록
-new ConvertToWebpTool(API_KEY, params).register(server);
+// Register tools
+new ReadFileTool(API_KEY, params).register(server);
 
 async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("WebP Conversion MCP Server running on stdio");
+  console.error("Sequential Thinking MCP Server running on stdio");
 }
 
 runServer().catch((error) => {
