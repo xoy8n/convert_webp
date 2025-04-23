@@ -10,7 +10,14 @@ function parseArgs() {
   const args = process.argv.slice(2);
   const params: Record<string, string> = {};
 
-  for (const arg of args) {
+  // 첫 번째 인자는 allowedDirectory로 처리
+  if (args.length > 0) {
+    params.allowedDirectory = args[0];
+  }
+
+  // 나머지 인자들은 기존 방식대로 처리
+  for (let i = 1; i < args.length; i++) {
+    const arg = args[i];
     if (arg.startsWith("--") || arg.startsWith("—")) {
       const [key, value] = arg.replace(/^(-{1,2}|—)/, "").split("=");
       if (key && value) {
@@ -24,6 +31,10 @@ function parseArgs() {
 
 const params = parseArgs();
 const API_KEY = params.API_KEY || process.env.API_KEY;
+
+console.error(
+  `Server initialized with allowedDirectory: ${params.allowedDirectory}`
+);
 
 const server = new McpServer({
   name: "fs-mcp",
