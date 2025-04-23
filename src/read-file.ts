@@ -53,10 +53,10 @@ export class ReadFileTool extends BaseTool {
     try {
       // 클라이언트로부터 받은 데이터를 사용
       const diagnostics = {
-        cwd: clientCwd || "unknown",
+        cwd: clientCwd,
         currentDirectory: directoryContents || [],
         parentDirectory: parentDirectoryContents || [],
-        platform: clientPlatform || "unknown",
+        platform: clientPlatform,
         apiKeyProvided: !!this.apiKey,
         serverInfo: {
           platform: process.platform,
@@ -91,9 +91,14 @@ export class ReadFileTool extends BaseTool {
                   message: error.message,
                   code: error.code,
                   path: error.path,
-                  diagnostics: {
-                    serverPlatform: process.platform,
-                    serverCwd: process.cwd(),
+                  clientRequest: {
+                    path: absolutePathToProjectDirectory,
+                    platform: clientPlatform,
+                    cwd: clientCwd,
+                  },
+                  serverEnvironment: {
+                    platform: process.platform,
+                    cwd: process.cwd(),
                     apiKeyProvided: !!this.apiKey,
                   },
                 },
