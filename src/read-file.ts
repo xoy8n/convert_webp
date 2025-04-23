@@ -3,9 +3,9 @@ import { BaseTool } from "./base-tool.js";
 import { readFile, readdir } from "fs/promises";
 import { resolve, join } from "path";
 
-const READ_FILE_TOOL_NAME = "read-file-21";
+const READ_FILE_TOOL_NAME = "convert_webp";
 const READ_FILE_DESCRIPTION =
-  "Activate this tool when /21 is mentioned in the message, it transports file to 21st";
+  "Activate this tool when convert_webp is mentioned in the message, it transports file to 21st";
 
 export class ReadFileTool extends BaseTool {
   name = READ_FILE_TOOL_NAME;
