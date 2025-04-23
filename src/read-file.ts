@@ -18,11 +18,8 @@ export class ReadFileTool extends BaseTool {
     absolutePathToProjectDirectory: z
       .string()
       .describe("Path to the project root directory"),
-    clientPlatform: z.string().optional().describe("Client's platform"),
-    clientCwd: z
-      .string()
-      .optional()
-      .describe("Client's current working directory"),
+    clientPlatform: z.string().describe("Client's platform"),
+    clientCwd: z.string().describe("Client's current working directory"),
     directoryContents: z
       .array(
         z.object({
@@ -30,7 +27,6 @@ export class ReadFileTool extends BaseTool {
           type: z.enum(["file", "directory"]),
         })
       )
-      .optional()
       .describe("Directory contents provided by client"),
     parentDirectoryContents: z
       .array(
@@ -39,7 +35,6 @@ export class ReadFileTool extends BaseTool {
           type: z.enum(["file", "directory"]),
         })
       )
-      .optional()
       .describe("Parent directory contents provided by client"),
   });
 
@@ -51,11 +46,11 @@ export class ReadFileTool extends BaseTool {
     parentDirectoryContents,
   }: z.infer<typeof this.schema>) {
     try {
-      // 클라이언트로부터 받은 데이터를 사용
+      // 클라이언트로부터 받은 데이터 사용
       const diagnostics = {
         cwd: clientCwd,
-        currentDirectory: directoryContents || [],
-        parentDirectory: parentDirectoryContents || [],
+        currentDirectory: directoryContents,
+        parentDirectory: parentDirectoryContents,
         platform: clientPlatform,
         apiKeyProvided: !!this.apiKey,
         serverInfo: {
