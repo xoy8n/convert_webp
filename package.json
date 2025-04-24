@@ -1,5 +1,5 @@
 {
-  "name": "webp-convert-mcp",
+  "name": "@xoy8n/webp-convert-mcp",
   "version": "1.0.1",
   "type": "module",
   "main": "dist/index.js",
