@@ -16,14 +16,19 @@
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "publish-patch": "npm version patch && npm run build && npm publish --access public"
   },
+  "author": "s01057111917@gmail.com",
+  "license": "ISC",
+  "homepage": "https://github.com/xoy8n/convert-webp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xoy8n/convert-webp.git"
+  },
   "keywords": [
     "mcp",
     "webp",
     "image",
     "conversion"
   ],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.9.0",
     "nodemon": "^3.0.3",
