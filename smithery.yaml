@@ -1,10 +1,32 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
 startCommand:
   type: stdio
   configSchema:
+    # JSON Schema defining the configuration options for the MCP.
     type: object
-    properties: {}
-  commandFunction: |
-    (config) => ({
-      command: "node",
-      args: ["dist/index.js"]
-    })
+    required:
+      - allowedDirectory
+    properties:
+      allowedDirectory:
+        type: string
+        description:
+          The absolute path to an allowed directory for the filesystem
+          server. For example, in the Docker container '/app' is a good default.
+  commandFunction: |-
+    (config) => {
+      return {
+        command: "docker",
+        args: [
+          "run",
+          "--rm",
+          "-i",
+          "-v", `${config.allowedDirectory}:/allowed`,
+          "-e", `ALLOWED_DIRECTORY=/allowed`,
+          "my-mcp-server-image",
+          "node", "dist/index.js"
+        ]
+      };
+    }
+  exampleConfig:
+    allowedDirectory: /Users/username/Documents
