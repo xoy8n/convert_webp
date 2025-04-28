@@ -10,7 +10,7 @@ export async function convertToWebP(
   quality: number = 80,
   lossless: boolean = false,
   keepOriginal: boolean = false,
-  basePath: string = process.env.ALLOWED_DIRECTORY || "/allowed"
+  basePath: string = process.env.ALLOWED_DIRECTORY || ""
 ): Promise<any> {
   try {
     if (!basePath) {

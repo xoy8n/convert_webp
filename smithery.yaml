@@ -16,16 +16,11 @@ startCommand:
   commandFunction: |-
     (config) => {
       return {
-        command: "docker",
+        command: "node",
         args: [
-          "run",
-          "--rm",
-          "-i",
-          "-v", `${config.allowedDirectory}:/allowed`,
-          "-e", `ALLOWED_DIRECTORY=/allowed`,
-          "my-mcp-server-image",
-          "node", "dist/index.js"
-        ]
+          "dist/index.js"
+        ],
+        env: { ALLOWED_DIRECTORY: config.allowedDirectory }
       };
     }
   exampleConfig:
