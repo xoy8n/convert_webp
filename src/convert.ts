@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import * as path from "path";
 import sharp from "sharp";
 
@@ -9,11 +10,20 @@ export async function convertToWebP(
   quality: number = 80,
   lossless: boolean = false,
   keepOriginal: boolean = false,
-  basePath: string = process.cwd()
+  basePath: string = process.env.ALLOWED_DIRECTORY || "/allowed"
 ): Promise<any> {
   try {
+    if (!basePath) {
+      throw new Error("ALLOWED_DIRECTORY가 설정되지 않았습니다.");
+    }
+
     // 상대 경로를 절대 경로로 변환
     const absolutePath = path.resolve(basePath, imagePath);
+
+    // 입력 파일이 존재하는지 확인
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error(`입력 파일이 존재하지 않습니다: ${absolutePath}`);
+    }
 
     // 이미지 확장자 확인
     const ext = path.extname(absolutePath).toLowerCase();
@@ -34,11 +44,18 @@ export async function convertToWebP(
     // 이미지 변환
     await sharp(absolutePath).webp(options).toFile(outputPath);
 
+    // 원본 파일 삭제 여부 확인
+    if (!keepOriginal) {
+      fs.unlinkSync(absolutePath);
+    }
+
     // 결과 반환
     return {
       success: true,
       input_path: absolutePath,
       output_path: outputPath,
+      size_before: fs.statSync(keepOriginal ? absolutePath : outputPath).size,
+      size_after: fs.statSync(outputPath).size,
       quality,
       lossless,
     };
