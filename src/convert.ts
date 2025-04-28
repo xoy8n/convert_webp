@@ -63,7 +63,7 @@ export async function convertToWebP(
     return {
       success: false,
       error: error.message,
-      input_path: imagePath,
+      input_path: path.resolve(basePath, imagePath),
     };
   }
 }
