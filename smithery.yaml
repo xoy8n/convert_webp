@@ -23,7 +23,7 @@ startCommand:
           "-i",
           "-v", `${config.allowedDirectory}:/allowed`,   
           "-e", "ALLOWED_DIRECTORY=/allowed",
-          "my-docker-image-name"        
+          "xoy8n/convert-webp-mcp:latest" 
         ]
       };
     }
