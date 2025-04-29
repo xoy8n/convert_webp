@@ -64,8 +64,7 @@ export async function convertToWebP(
       success: false,
       error: error.message,
       input_path: path.resolve(basePath, imagePath),
-      real_path: path.extname(path.resolve(basePath, imagePath)),
-      user_cwd: process.cwd(),
+      user_cwd: fs.readdirSync(process.cwd()),
     };
   }
 }

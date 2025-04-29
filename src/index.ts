@@ -23,7 +23,7 @@ server.tool(
   },
   async (params) => {
     const imagePath = params.image_path.replace(/^"|"$/g, "");
-    const basePath = params.base_path || process.cwd();
+    const basePath = params.base_path;
 
     const result = await convertToWebP(
       imagePath,
@@ -49,7 +49,7 @@ server.tool(
   },
   async (params) => {
     const results = [];
-    const basePath = params.base_path || process.cwd();
+    const basePath = params.base_path;
 
     for (const path of params.image_paths) {
       const imagePath = path.replace(/^"|"$/g, "");
