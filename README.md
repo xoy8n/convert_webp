@@ -2,6 +2,8 @@
 
 이 프로젝트는 이미지 파일을 WebP 형식으로 변환하는 Model Context Protocol(MCP) 서버입니다.
 
+[![smithery badge](https://smithery.ai/badge/@xoy8n/convert_webp)](https://smithery.ai/server/@xoy8n/convert_webp)
+
 ## 기능
 
 - PNG, JPG, JPEG 파일을 WebP로 변환
