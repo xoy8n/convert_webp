@@ -20,7 +20,9 @@ startCommand:
         args: [
           "dist/index.js"
         ],
-        env: { ALLOWED_DIRECTORY: config.allowedDirectory }
+        env: {
+          ALLOWED_DIRECTORY: "/allowed"
+        }
       };
     }
   exampleConfig:
