@@ -15,6 +15,7 @@ startCommand:
           server. For example, in the Docker container '/app' is a good default.
   commandFunction: |-
     (config) => {
+      console.log("🚀 config.allowedDirectory:", config.allowedDirectory);
       return {
         command: "node",
         args: [

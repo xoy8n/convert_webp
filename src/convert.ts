@@ -62,7 +62,6 @@ export async function convertToWebP(
       input_path: imagePath,
       base_path: basePath,
       user_cwd: fs.readdirSync(process.cwd()),
-      allowed_dir: fs.readdirSync(process.env.ALLOWED_DIRECTORY || ""),
     };
   }
 }
