@@ -1,5 +1,3 @@
-# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
-
 startCommand:
   type: stdio
   configSchema:
@@ -16,9 +14,14 @@ startCommand:
   commandFunction: |-
     (config) => {
       return {
-        command: "node",
+        command: "docker",
         args: [
-          "dist/index.js"
+          "run",
+          "--rm",
+          "-i",
+          "-v", `${config.allowedDirectory}:/allowed`,
+          "-e", `ALLOWED_DIRECTORY=/allowed`,
+          "my-mcp-server-image",
         ],
         env: { ALLOWED_DIRECTORY: config.allowedDirectory }
       };
