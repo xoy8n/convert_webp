@@ -10,13 +10,9 @@ export async function convertToWebP(
   quality: number = 80,
   lossless: boolean = false,
   keepOriginal: boolean = false,
-  basePath: string = process.env.ALLOWED_DIRECTORY || ""
+  basePath: string = process.cwd()
 ): Promise<any> {
   try {
-    if (!basePath) {
-      throw new Error("ALLOWED_DIRECTORY가 설정되지 않았습니다.");
-    }
-
     // 상대 경로를 절대 경로로 변환
     const absolutePath = path.resolve(basePath, imagePath);
 
@@ -63,8 +59,7 @@ export async function convertToWebP(
     return {
       success: false,
       error: error.message,
-      input_path: path.resolve(basePath, imagePath),
-      user_cwd: fs.readdirSync(process.cwd()),
+      input_path: imagePath,
     };
   }
 }

@@ -4,6 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { convertToWebP } from "./convert.js";
+import * as path from "path";
 
 // 서버 초기화
 const server = new McpServer({
@@ -23,7 +24,7 @@ server.tool(
   },
   async (params) => {
     const imagePath = params.image_path.replace(/^"|"$/g, "");
-    const basePath = params.base_path;
+    const basePath = params.base_path || process.cwd();
 
     const result = await convertToWebP(
       imagePath,
@@ -49,7 +50,7 @@ server.tool(
   },
   async (params) => {
     const results = [];
-    const basePath = params.base_path;
+    const basePath = params.base_path || process.cwd();
 
     for (const path of params.image_paths) {
       const imagePath = path.replace(/^"|"$/g, "");
