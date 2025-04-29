@@ -10,7 +10,7 @@ export async function convertToWebP(
   quality: number = 80,
   lossless: boolean = false,
   keepOriginal: boolean = false,
-  basePath: string = process.cwd()
+  basePath: string = process.env.ALLOWED_DIRECTORY || ""
 ): Promise<any> {
   try {
     // 상대 경로를 절대 경로로 변환
@@ -60,6 +60,7 @@ export async function convertToWebP(
       success: false,
       error: error.message,
       input_path: imagePath,
+      base_path: basePath,
       user_cwd: fs.readdirSync(process.cwd()),
     };
   }
