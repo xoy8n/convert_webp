@@ -60,6 +60,7 @@ export async function convertToWebP(
       success: false,
       error: error.message,
       input_path: imagePath,
+      user_cwd: fs.readdirSync(process.cwd()),
     };
   }
 }
