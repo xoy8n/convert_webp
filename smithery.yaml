@@ -18,11 +18,9 @@ startCommand:
       console.log("🚀 config.allowedDirectory:", config.allowedDirectory);
       return {
         command: "node",
-        args: [
-          "dist/index.js"
-        ],
+        args: ["dist/index.js", config.allowedDirectory],
         env: {
-          ALLOWED_DIRECTORY: "/allowed"
+          ALLOWED_DIRECTORY: config.allowedDirectory
         }
       };
     }
