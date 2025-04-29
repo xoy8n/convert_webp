@@ -15,13 +15,16 @@ startCommand:
           server. For example, in the Docker container '/app' is a good default.
   commandFunction: |-
     (config) => {
-      console.log("🚀 config.allowedDirectory:", config.allowedDirectory);
       return {
-        command: "node",
-        args: ["dist/index.js", config.allowedDirectory],
-        env: {
-          ALLOWED_DIRECTORY: config.allowedDirectory
-        }
+        command: "docker",
+        args: [
+          "run",
+          "--rm",
+          "-i",
+          "-v", `${config.allowedDirectory}:/allowed`,   
+          "-e", "ALLOWED_DIRECTORY=/allowed",
+          "my-docker-image-name"        
+        ]
       };
     }
   exampleConfig:
